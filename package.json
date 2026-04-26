@@ -1,0 +1,28 @@
+{
+  "name": "migration-state",
+  "version": "0.2.0",
+  "description": "Compute PostgreSQL schema state from migration files",
+  "type": "module",
+  "bin": {
+    "migration-state": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "build": "bun build src/index.ts --outdir dist --target node --format esm --external @supabase/pg-parser --external commander",
+    "test": "bun test ./test/",
+    "typecheck": "bunx tsc --noEmit --project tsconfig.ci.json",
+    "prepublishOnly": "bun run build"
+  },
+  "dependencies": {
+    "@supabase/pg-parser": "^0.1.7",
+    "commander": "^14.0.0"
+  },
+  "devDependencies": {
+    "bun-types": "^1.3.13"
+  }
+}

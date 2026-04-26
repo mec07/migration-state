@@ -1,0 +1,2 @@
+-- This migration is intentionally blank
+-- It was a placeholder that never got content

@@ -1,0 +1,9 @@
+-- +goose Up
+-- Migration 01: Schemas and Extensions
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+CREATE SCHEMA IF NOT EXISTS audit;
+CREATE SCHEMA IF NOT EXISTS api;
+-- +goose Down
+-- (down migration omitted for testing)
