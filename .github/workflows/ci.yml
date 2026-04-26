@@ -31,7 +31,8 @@ jobs:
     name: Publish to npm
     needs: check
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    # TODO: revert to main-only after fixing publish
+    # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     permissions:
       contents: read
@@ -48,6 +49,9 @@ jobs:
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org
+
+      - name: Upgrade npm for Trusted Publishing OIDC support
+        run: npm install -g npm@latest
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
