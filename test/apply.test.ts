@@ -514,6 +514,39 @@ describe("applyMigrations", () => {
     });
   });
 
+  describe("ALTER TYPE RENAME VALUE", () => {
+    test("renames an existing enum value", async () => {
+      const { state } = await applySQL(
+        "CREATE TYPE status AS ENUM ('pending', 'complete', 'failed');",
+        "ALTER TYPE status RENAME VALUE 'complete' TO 'completed';"
+      );
+      const e = state.schemas.get("public")!.enums.get("status")!;
+      expect(e.values).toEqual(["pending", "completed", "failed"]);
+      expect(e.values).not.toContain("complete");
+    });
+
+    test("rename preserves position in values list", async () => {
+      const { state } = await applySQL(
+        "CREATE TYPE priority AS ENUM ('low', 'medium', 'high', 'critical');",
+        "ALTER TYPE priority RENAME VALUE 'medium' TO 'normal';"
+      );
+      const e = state.schemas.get("public")!.enums.get("priority")!;
+      expect(e.values).toEqual(["low", "normal", "high", "critical"]);
+    });
+
+    test("rename then add value works in sequence", async () => {
+      const { state } = await applySQL(
+        "CREATE TYPE status AS ENUM ('pending', 'complete');",
+        "ALTER TYPE status ADD VALUE 'accepted';",
+        "ALTER TYPE status ADD VALUE 'rejected';",
+        "ALTER TYPE status ADD VALUE 'failed';",
+        "ALTER TYPE status RENAME VALUE 'complete' TO 'completed';"
+      );
+      const e = state.schemas.get("public")!.enums.get("status")!;
+      expect(e.values).toEqual(["pending", "completed", "accepted", "rejected", "failed"]);
+    });
+  });
+
   describe("DROP TYPE (STATE-17)", () => {
     test("removes enum", async () => {
       const { state } = await applySQL(

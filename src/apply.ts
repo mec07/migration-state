@@ -570,6 +570,16 @@ function handleAlterEnum(state: SchemaState, stmt: DdlStatement): void {
   const newVal = stmt.ast.newVal;
   if (!newVal) return;
 
+  // RENAME VALUE: oldVal is set
+  if (stmt.ast.oldVal) {
+    const idx = e.values.indexOf(stmt.ast.oldVal);
+    if (idx !== -1) {
+      e.values[idx] = newVal;
+    }
+    return;
+  }
+
+  // ADD VALUE with position hint
   if (stmt.ast.newValNeighbor) {
     const neighborIdx = e.values.indexOf(stmt.ast.newValNeighbor);
     if (neighborIdx !== -1) {
