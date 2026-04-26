@@ -1,0 +1,18 @@
+{
+  "lockfileVersion": 1,
+  "configVersion": 1,
+  "workspaces": {
+    "": {
+      "name": "migration-state",
+      "dependencies": {
+        "@supabase/pg-parser": "^0.1.7",
+        "commander": "^14.0.0",
+      },
+    },
+  },
+  "packages": {
+    "@supabase/pg-parser": ["@supabase/pg-parser@0.1.7", "", {}, "sha512-NSf8e0dwQjLr0QFMwUI04reFzi+XA8eYo4neEfHM/InbS68N91z5bvOvg+ikXNqHFj+6nsBfckLdt7DZsnptzg=="],
+
+    "commander": ["commander@14.0.3", "", {}, "sha512-H+y0Jo/T1RZ9qPP4Eh1pkcQcLRglraJaSLoyOtHxu6AapkjWVCy2Sit1QQ4x3Dng8qDlSsZEet7g5Pq06MvTgw=="],
+  }
+}

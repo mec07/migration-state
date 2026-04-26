@@ -1,0 +1,17 @@
+{
+  "name": "migration-state",
+  "version": "0.1.0",
+  "description": "Compute PostgreSQL schema state from migration files",
+  "type": "module",
+  "bin": {
+    "migration-state": "src/index.ts"
+  },
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@supabase/pg-parser": "^0.1.7",
+    "commander": "^14.0.0"
+  }
+}
