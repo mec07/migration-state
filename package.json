@@ -1,6 +1,6 @@
 {
   "name": "migration-state",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Compute PostgreSQL schema state from migration files",
   "type": "module",
   "bin": {

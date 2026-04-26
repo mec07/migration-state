@@ -42,6 +42,12 @@ export function extractVersion(filename: string, parentDir?: string): string {
   // Directory-per-migration: if filename is generic (e.g. migration.sql),
   // use the parent directory name to extract the version
   if (parentDir) {
+    // Flyway V-prefix on directory name: V12__name or V20240101__name
+    const flywayDirMatch = parentDir.match(/^V([\d.]+)__/);
+    if (flywayDirMatch?.[1]) {
+      return flywayDirMatch[1];
+    }
+    // Numeric/timestamp prefix on directory name
     const leadingDigits = parentDir.match(/^(\d+)/);
     if (leadingDigits?.[1]) {
       return leadingDigits[1];
@@ -102,8 +108,8 @@ function shouldExclude(filename: string): boolean {
   if (FLYWAY_CALLBACKS.has(filename)) return true;
   // Metadata files
   if (METADATA_FILES.has(filename)) return true;
-  // Down migrations: *.down.sql
-  if (filename.endsWith(".down.sql")) return true;
+  // Down migrations: *.down.sql or exactly "down.sql"
+  if (filename.endsWith(".down.sql") || filename === "down.sql") return true;
   // Flyway undo migrations: U{version}__name.sql
   if (/^U[\d.]+__/.test(filename)) return true;
   // Not a SQL file

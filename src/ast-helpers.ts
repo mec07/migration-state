@@ -80,13 +80,19 @@ export function extractTypeName(typeNameNode: any): string {
 export function deparseExpr(node: any): string {
   if (!node) return "";
   if (node.A_Const) {
-    if (node.A_Const.ival !== undefined) return String(node.A_Const.ival.ival ?? node.A_Const.ival);
+    if (node.A_Const.ival !== undefined) {
+      const ival = typeof node.A_Const.ival === "object" ? node.A_Const.ival.ival : node.A_Const.ival;
+      return String(ival);
+    }
     if (node.A_Const.fval !== undefined) return node.A_Const.fval;
     if (node.A_Const.sval !== undefined) {
       const sval = typeof node.A_Const.sval === "object" ? node.A_Const.sval.sval : node.A_Const.sval;
       return `'${sval}'`;
     }
-    if (node.A_Const.boolval !== undefined) return String(node.A_Const.boolval);
+    if (node.A_Const.boolval !== undefined) {
+      const bval = typeof node.A_Const.boolval === "object" ? node.A_Const.boolval.boolval : node.A_Const.boolval;
+      return String(bval);
+    }
     if (node.A_Const.isnull) return "NULL";
   }
   if (node.FuncCall) {

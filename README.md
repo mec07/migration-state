@@ -83,9 +83,58 @@ Full spike results in [`spike/results/comparison.md`](spike/results/comparison.m
 - **Language:** TypeScript
 - **PostgreSQL only, SQL-file migrations only**
 
-## Status
+## Development
 
-Under active development. See `.planning/ROADMAP.md` for phase details.
+```bash
+bun install          # install dependencies
+bun test ./test/     # run tests (213 tests)
+bun run typecheck    # type check src/
+bun run build        # build dist/index.js for npm
+bun run src/index.ts # run from source (dev)
+```
+
+## Publishing
+
+CI automatically publishes to npm when a PR is merged to `main`, **but only if the version in `package.json` has changed**. No version bump = no publish.
+
+### How to release
+
+1. Bump the version in `package.json` (e.g., `0.1.0` → `0.2.0`)
+2. Merge to `main`
+3. CI runs typecheck + tests, then publishes to npm
+
+The first merge that includes the npm token setup will publish `0.1.0` automatically (since the package doesn't exist on npm yet, any version counts as new).
+
+### CI setup (one-time)
+
+Publishing uses [npm Trusted Publishing](https://docs.npmjs.com/generating-provenance-statements#publishing-packages-with-provenance-via-github-actions) via OIDC — no tokens to manage or rotate.
+
+**First publish (creates the package on npm):**
+
+```bash
+bun run build
+npm login
+npm publish --access public
+```
+
+**Then enable Trusted Publishing:**
+
+1. Go to [npmjs.com](https://www.npmjs.com) → package `migration-state` → **Settings** → **Publishing access**
+2. Add trusted publisher:
+   - Provider: **GitHub Actions**
+   - Repository owner: `mec07`
+   - Repository name: `migration-state`
+   - Workflow filename: `ci.yml`
+   - Environment: *(leave blank)*
+
+After this, all subsequent publishes happen automatically via CI with no tokens needed.
+
+### What CI does
+
+| Trigger | Jobs |
+|---------|------|
+| Push to `main` | Typecheck → Test → Publish (if version changed) |
+| Pull request to `main` | Typecheck → Test |
 
 ## License
 
