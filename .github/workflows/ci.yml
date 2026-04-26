@@ -31,8 +31,7 @@ jobs:
     name: Publish to npm
     needs: check
     runs-on: ubuntu-latest
-    # TODO: revert to main-only after fixing publish
-    # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     permissions:
       contents: read
