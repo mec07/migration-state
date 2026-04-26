@@ -88,18 +88,18 @@ export async function parseMigrations(
   const parser = getParser();
 
   for (let fileIdx = 0; fileIdx < sqlStrings.length; fileIdx++) {
-    const sql = sqlStrings[fileIdx];
+    const sql = sqlStrings[fileIdx]!;
     const file = sourceFiles[fileIdx] ?? `<unknown-${fileIdx}>`;
     let statementIndex = 0;
 
     let tree: any;
     try {
       tree = await unwrapParseResult(parser.parse(sql));
-    } catch (err: any) {
+    } catch (err: unknown) {
       warnings.push({
         level: "warn",
         stage: "parsing",
-        message: `Failed to parse SQL: ${err?.message ?? String(err)}`,
+        message: `Failed to parse SQL: ${err instanceof Error ? err.message : String(err)}`,
         source: { file, sql },
       });
       continue;
@@ -109,12 +109,14 @@ export async function parseMigrations(
 
     for (let i = 0; i < stmts.length; i++) {
       const rawStmt = stmts[i];
-      const { type, node } = unwrapNode(rawStmt.stmt);
+      const unwrapped = unwrapNode(rawStmt.stmt);
+      const type = String(unwrapped.type);
+      const node = unwrapped.node;
 
       // Compute per-statement SQL slice
       const loc = rawStmt.stmt_location ?? 0;
       const nextLoc =
-        i + 1 < stmts.length ? stmts[i + 1].stmt_location : undefined;
+        i + 1 < stmts.length ? stmts[i + 1]?.stmt_location : undefined;
       const stmtSql = sliceSql(sql, loc, nextLoc);
 
       if (DDL_TYPES.has(type)) {
@@ -155,10 +157,11 @@ export async function parseMigrations(
           try {
             const innerTree = await unwrapParseResult(parser.parse(innerSql));
             for (const innerRawStmt of innerTree.stmts ?? []) {
-              const inner = unwrapNode(innerRawStmt.stmt);
-              if (DDL_TYPES.has(inner.type)) {
+              const inner = unwrapNode(innerRawStmt.stmt!);
+              const innerType = String(inner.type);
+              if (DDL_TYPES.has(innerType)) {
                 statements.push({
-                  type: inner.type,
+                  type: innerType,
                   ast: inner.node,
                   sql: innerSql.replace(/[\s;]+$/, "").trim(),
                   source: { file, statementIndex },

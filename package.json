@@ -8,7 +8,8 @@
   },
   "scripts": {
     "start": "bun run src/index.ts",
-    "test": "bun test"
+    "test": "bun test ./test/",
+    "typecheck": "bunx tsc --noEmit --project tsconfig.ci.json"
   },
   "dependencies": {
     "@supabase/pg-parser": "^0.1.7",

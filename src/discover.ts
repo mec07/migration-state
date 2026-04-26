@@ -43,20 +43,20 @@ export function extractVersion(filename: string, parentDir?: string): string {
   // use the parent directory name to extract the version
   if (parentDir) {
     const leadingDigits = parentDir.match(/^(\d+)/);
-    if (leadingDigits) {
+    if (leadingDigits?.[1]) {
       return leadingDigits[1];
     }
   }
 
   // Flyway V prefix: V{version}__name.sql
   const flywayMatch = filename.match(/^V([\d.]+)__/);
-  if (flywayMatch) {
+  if (flywayMatch?.[1]) {
     return flywayMatch[1];
   }
 
   // Numeric/timestamp prefix: digits followed by _ or .
   const numericMatch = filename.match(/^(\d+)/);
-  if (numericMatch) {
+  if (numericMatch?.[1]) {
     return numericMatch[1];
   }
 

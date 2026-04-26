@@ -239,8 +239,9 @@ function handleAddColumn(table: Table, cmd: any, state: SchemaState, stmt: DdlSt
   let nullable = true;
   let defaultVal: string | undefined;
 
-  const isSerial = !!SERIAL_TYPES[typeName.toLowerCase()];
-  const actualType = isSerial ? SERIAL_TYPES[typeName.toLowerCase()] : typeName;
+  const serialExpansion = SERIAL_TYPES[typeName.toLowerCase()];
+  const isSerial = !!serialExpansion;
+  const actualType = serialExpansion ?? typeName;
 
   for (const c of colDef.constraints ?? []) {
     const con = c.Constraint;
