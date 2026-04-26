@@ -1,7 +1,11 @@
 {
   "name": "migration-state",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Compute PostgreSQL schema state from migration files",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mec07/migration-state"
+  },
   "type": "module",
   "bin": {
     "migration-state": "dist/index.js"
