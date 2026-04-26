@@ -245,6 +245,7 @@ export function renderMarkdown(
   const allViews: View[] = [];
   const allFunctions: DbFunction[] = [];
   const allSequences: Sequence[] = [];
+  const allDomains: { name: string; schema: string; baseType: string; constraints: string[] }[] = [];
 
   for (const [, schemaDef] of filtered.schemas) {
     for (const [, t] of schemaDef.tables) allTables.push(t);
@@ -252,6 +253,7 @@ export function renderMarkdown(
     for (const [, v] of schemaDef.views) allViews.push(v);
     for (const [, f] of schemaDef.functions) allFunctions.push(f);
     for (const [, s] of schemaDef.sequences) allSequences.push(s);
+    for (const [, d] of schemaDef.domains) allDomains.push(d);
   }
 
   // Empty check
@@ -280,6 +282,18 @@ export function renderMarkdown(
       lines.push(`Values: ${e.values.map(v => `\`${v}\``).join(", ")}`);
       lines.push("");
     }
+  }
+
+  // Domains
+  if (allDomains.length > 0) {
+    lines.push("## Domains");
+    lines.push("");
+    for (const d of allDomains.sort((a, b) => a.name.localeCompare(b.name))) {
+      const prefix = d.schema !== "public" ? `${d.schema}.` : "";
+      const constraints = d.constraints.length > 0 ? ` CHECK ${d.constraints.join(", ")}` : "";
+      lines.push(`- \`${prefix}${d.name}\` (${d.baseType})${constraints}`);
+    }
+    lines.push("");
   }
 
   // Tables
